@@ -74,6 +74,12 @@ const raycasterobjects = [];
 let currentIntersect = [];
 let touchHappend = false;
 let lastHovered = null;
+const plank1 = [];
+const plank2 = [];
+const about = [];
+const contact = [];
+const project = [];
+const PianoKeys = [];
 const socialLinks = {
   Github: "https://github.com/sum1t7",
   Youtube: "https://www.youtube.com",
@@ -180,7 +186,7 @@ window.addEventListener("mousemove", (event) => {
 if (currentIntersect.length > 0) {
   const obj = currentIntersect[0].object;
 
-  if (obj.name.includes("Pointer")) {
+  if (obj.name.includes("Pointer") && !obj.name.includes("Fish") && !obj.name.includes("Blob")) {
     if (lastHovered !== obj) {
       if (lastHovered) resetObject(lastHovered);
       hoverEffect(obj);
@@ -198,13 +204,11 @@ if (currentIntersect.length > 0) {
     lastHovered = null;
   }
 }
-
-  
 });
 window.addEventListener("click", () => {
   if (currentIntersect.length > 0) {
     const obj = currentIntersect[0].object;
-    if( obj.name.includes("Fish")) {
+    if( obj.name.includes("Fish") || obj.name.includes("Blob")) {
          animateCameraTo(obj.position);
        }
       }
@@ -272,6 +276,26 @@ loader.load("/model/CuteProject7.glb", (glb) => {
           if (child.name.includes("Raycast")) {
             raycasterobjects.push(child);
           }
+          if(child.name.includes("PianoKey")) {
+            PianoKeys.push(child);
+          }
+          if( child.name.includes("Plank1")) {
+            plank1.push(child);
+          }
+          if( child.name.includes("Plank2")) {
+            plank2.push(child);
+          }
+          if( child.name.includes("About")) {
+            about.push(child);
+          }
+          if( child.name.includes("Contact")) {
+            contact.push(child);
+          }
+          if( child.name.includes("Project")) {
+            project.push(child);
+          }
+
+          
         });
       }
     }
@@ -303,7 +327,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(3.4741997116209347, 15.927475396592332, 3.714915482053487);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.minPolarAngle = THREE.MathUtils.degToRad(30);
+controls.minPolarAngle = THREE.MathUtils.degToRad(20);
 controls.maxPolarAngle = THREE.MathUtils.degToRad(80);
 controls.minAzimuthAngle = THREE.MathUtils.degToRad(-75);
 controls.maxAzimuthAngle = THREE.MathUtils.degToRad(-10);
@@ -333,7 +357,7 @@ const hideModal = (modal) => {
   });
 };
 function animateCameraTo(objectPosition) {
-  const newCamPos = objectPosition.clone().add(new THREE.Vector3(2, 2, 2));  
+  const newCamPos = objectPosition.clone().add(new THREE.Vector3(2, 0, 2));  
 
    gsap.to(camera.position, {
     x: newCamPos.x,
@@ -379,9 +403,7 @@ function hoverEffect(obj) {
     duration: 0.4,
     ease: "power2.out"
   });
-  
 
-  
 };
 function resetObject(obj) {
   gsap.to(obj.scale, {
@@ -417,8 +439,10 @@ function handleRaycasterInteraction() {
     }
   }
 };
+function introAnimation(){
+  const t1 = gsap.timeline({ defaults: { duration: 1, ease: "power2.inOut" } });
 
-
+}
  
 
  
@@ -432,7 +456,10 @@ const render = () => {
     fan.rotation.x += 0.03;
   });
   chairTop.forEach((chair) => {
+    chair.rotation.y += Math.sin(clock.getElapsedTime()) * 0.0004;
 
+  });
+  PianoKeys.forEach((key) => {
   });
 
   //Raycasting
