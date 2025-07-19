@@ -49,12 +49,31 @@
   
 }
 
+body {
+   font-family: 'Poppins', 'Trebuchet MS', sans-serif;
+   margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+.model-title{
+  font-size: 2.5rem;
+  font-family: 'Pacifico', cursive;
+  font-weight: bold;
+  color: rgb(255, 235, 235);
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: #ff8888;
+  border-radius: 20px;
+  width: 20%;
+  
+}
+
 .modal-exit{
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: -10px;
+  right: -10px;
   cursor: pointer;
-  font-size: 2rem;
+  font-size: 3rem;
   font-weight: bold;
   color: #fbc9df;
   justify-items: center;
@@ -62,16 +81,21 @@
   align-content: center;
   justify-content: center;
   text-decoration: none;
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border: none;
-  border-radius: 50%;
+  border-radius: 8px;
   background-color: rgb(255, 125, 125);
 }
 
 .about {
   max-width: 800px;
   height: 70%;
+}
+
+img{
+    border: 4px solid #ff7676;
+    border-radius: 20px; 
 }
 
 .contact {

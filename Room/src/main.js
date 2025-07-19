@@ -74,12 +74,13 @@ const raycasterobjects = [];
 let currentIntersect = [];
 let touchHappend = false;
 let lastHovered = null;
-const plank1 = [];
-const plank2 = [];
+let plank1 = null;
+let plank2  = null;
 const about = [];
 const contact = [];
 const project = [];
 const PianoKeys = [];
+const HoverObjects = [];
 const socialLinks = {
   Github: "https://github.com/sum1t7",
   Youtube: "https://www.youtube.com",
@@ -95,16 +96,28 @@ const models = {
 
 //Screen Video&Photo
 const videoElement = document.createElement("video");
-videoElement.src = "/textures/video/Screen.mp4";
+videoElement.src = "/textures/video/Back.mp4";
 videoElement.loop = true;
 videoElement.muted = true;
 videoElement.autoplay = true;
 videoElement.play();
+
 const videoTexture = new THREE.VideoTexture(videoElement);
-videoTexture.flipY = false;
+videoTexture.center.set(0.5, 0.5);  
+videoTexture.rotation = -Math.PI / 2;
+
 videoTexture.colorSpace = THREE.SRGBColorSpace;
+videoTexture.flipY = false;
+const imageElement = document.createElement("img");
+imageElement.src = "/textures/video/Photo.webp";
+imageElement.crossOrigin = "anonymous";
+const imageTexture = new THREE.Texture(imageElement);
+imageTexture.needsUpdate = true;
+imageTexture.offset.set(0.1, 0);
+imageTexture.repeat.set(1.2,1.2);
+imageTexture.colorSpace = THREE.SRGBColorSpace;
 
-
+ 
 
 //EventListeners
 document.querySelectorAll(".modal-exit").forEach((Button) => {
@@ -150,12 +163,6 @@ window.addEventListener(
   { passive: false }
 );
 window.addEventListener("click", handleRaycasterInteraction);
-
-window.addEventListener("mousemove", (event) => {
-  touchHappend = false;
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-});
 window.addEventListener("click", (event) => {
   if (currentIntersect.length > 0) {
     const currentIntersectObject = currentIntersect[0].object;
@@ -179,32 +186,34 @@ window.addEventListener("click", (event) => {
     }
   }
 });
-window.addEventListener("mousemove", (event) => {
-  pointer.x = (event.clientX / size.width) * 2 - 1;
-  pointer.y = -(event.clientY / size.height) * 2 + 1;
+window.addEventListener("click", (e) => {
+  if (currentIntersect.length > 0) {
+    const obj = currentIntersect[0].object;
+    if( obj.name.includes("PianoKey")) {
+         const keyIndex = PianoKeys.indexOf(obj);
+         if (keyIndex !== -1) {
+           gsap.to(obj.rotation, {
+             
+             z: 0.09,
+             duration: 0.2,
+             ease: "power2.inOut",
+             onComplete: () => {
+               gsap.to(obj.rotation, {
+                 
+                 z: 0,
+                 duration: 0.2,
+                 ease: "power2.inOut"
+               });
+             }
+           });
+         }
+        //  const audio = new Audio(`/sounds/piano/${keyIndex + 1}.mp3`);
+        //  audio.play();  
+        
+       }
+      }
   
-if (currentIntersect.length > 0) {
-  const obj = currentIntersect[0].object;
-
-  if (obj.name.includes("Pointer") && !obj.name.includes("Fish") && !obj.name.includes("Blob")) {
-    if (lastHovered !== obj) {
-      if (lastHovered) resetObject(lastHovered);
-      hoverEffect(obj);
-      lastHovered = obj;
-    }
-  } else {
-    if (lastHovered) {
-      resetObject(lastHovered);
-      lastHovered = null;
-    }
-  }
-} else {
-  if (lastHovered) {
-    resetObject(lastHovered);
-    lastHovered = null;
-  }
-}
-});
+})
 window.addEventListener("click", () => {
   if (currentIntersect.length > 0) {
     const obj = currentIntersect[0].object;
@@ -213,6 +222,12 @@ window.addEventListener("click", () => {
        }
       }
 });
+window.addEventListener("mousemove", (event) => {
+  touchHappend = false;
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+});
+ 
 window.addEventListener("resize", () => {
   size.width = window.innerWidth;
   size.height = window.innerHeight;
@@ -225,6 +240,7 @@ window.addEventListener("resize", () => {
   renderer.setSize(size.width, size.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
+
  
 
 
@@ -233,7 +249,7 @@ window.addEventListener("resize", () => {
 
 
 // MODEL SCENE CAMERA
-loader.load("/model/CuteProject7.glb", (glb) => {
+loader.load("/model/CuteProject12.glb", (glb) => {
   glb.scene.traverse((child) => {
     if (child.isMesh) {
       if (child.name.includes("Glass")) {
@@ -244,11 +260,16 @@ loader.load("/model/CuteProject7.glb", (glb) => {
           transparent: true,
           opacity: 0.5,
         });
-      } else if (child.name.includes("Screen")) {
+      } else if (child.name.includes("Photo")) {
         child.material = new THREE.MeshBasicMaterial({
-          map: videoTexture,
+         map: imageTexture
         });
-      } else {
+      }else if (child.name.includes("Screen")) {
+        child.material = new THREE.MeshBasicMaterial({
+         map: videoTexture
+        });
+      }
+       else {
         Object.keys(textureMap).forEach((key) => {
           if (child.name.includes(key)) {
             const material = new THREE.MeshBasicMaterial({
@@ -256,6 +277,7 @@ loader.load("/model/CuteProject7.glb", (glb) => {
             });
             child.material = material;
           }
+        
           if (
             child.name.includes("Fans30") ||
             child.name.includes("Fans23") ||
@@ -279,11 +301,11 @@ loader.load("/model/CuteProject7.glb", (glb) => {
           if(child.name.includes("PianoKey")) {
             PianoKeys.push(child);
           }
-          if( child.name.includes("Plank1")) {
-            plank1.push(child);
+          if( child.name.includes("HorizontalPlank")) {
+            plank1 = child
           }
-          if( child.name.includes("Plank2")) {
-            plank2.push(child);
+          if( child.name.includes("VerticalPlank")) {
+            plank2 = child
           }
           if( child.name.includes("About")) {
             about.push(child);
@@ -293,6 +315,10 @@ loader.load("/model/CuteProject7.glb", (glb) => {
           }
           if( child.name.includes("Project")) {
             project.push(child);
+          }
+          if(child.name.includes("Hover"))
+          {
+            HoverObjects.push(child);
           }
 
           
@@ -343,18 +369,17 @@ let originalTarget = controls.target.clone();
 
 const showModal = (modal) => {
   modal.style.display = "block";
-  gsap.set(modal, { opacity: 0 });
-  gsap.to(modal, { opacity: 1, duration: 0.5, ease: "power2.inOut" });
+  const tl = gsap.timeline();
+  tl.set(modal, { opacity: 1, scale: 0 })
+    .to(modal, { opacity: 1, scale: 1.25, duration: 0.2 , ease: "power2.inOut"})
+    .to(modal, { scale: 0.95, duration: 0.2 , ease: "power2.inOut"})
+    .to(modal, { opacity: 1, scale: 1, duration: 0.2, ease: "power2.inOut" });
 };
 const hideModal = (modal) => {
-  gsap.to(modal, {
-    opacity: 0,
-    duration: 0.5,
-    ease: "power2.inOut",
-    onComplete: () => {
-      modal.style.display = "none";
-    },
-  });
+  const tl = gsap.timeline();
+  tl.set(modal, { opacity: 1, scale: 1 })
+    .to(modal, { opacity: 1, scale: 1.25, duration: 0.2 , ease: "power2.inOut"})
+    .to(modal, { opacity: 0, scale: 0, duration: 0.2, ease: "power2.inOut" });
 };
 function animateCameraTo(objectPosition) {
   const newCamPos = objectPosition.clone().add(new THREE.Vector3(2, 0, 2));  
@@ -363,7 +388,7 @@ function animateCameraTo(objectPosition) {
     x: newCamPos.x,
     y: newCamPos.y,
     z: newCamPos.z,
-    duration: 1.5,
+    duration: 0.6,
     ease: "power2.inOut"
   });
 
@@ -371,7 +396,7 @@ function animateCameraTo(objectPosition) {
     x: objectPosition.x,
     y: objectPosition.y,
     z: objectPosition.z,
-    duration: 1.5,
+    duration: 0.3,
     ease: "power2.inOut",
     onUpdate: () => controls.update()
   });
@@ -393,7 +418,7 @@ function animateCameraTo(objectPosition) {
       ease: "power2.inOut",
       onUpdate: () => controls.update()
     });
-  }, 3000);
+  }, 2000);
 };
 function hoverEffect(obj) {
   gsap.to(obj.scale, {
@@ -444,6 +469,35 @@ function introAnimation(){
 
 }
  
+function animate() {
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(HoverObjects, true); // raycast only against hoverable objects
+
+  if (intersects.length > 0) {
+    const obj = intersects[0].object;
+    const keyIndex = HoverObjects.indexOf(obj);
+    
+    if (keyIndex !== -1) {
+      if (lastHovered !== keyIndex) {
+        if (lastHovered !== null && HoverObjects[lastHovered]) {
+          resetObject(HoverObjects[lastHovered]);
+        }
+        hoverEffect(obj);
+        lastHovered = keyIndex;
+      }
+    }
+  } else {
+    if (lastHovered !== null && HoverObjects[lastHovered]) {
+      resetObject(HoverObjects[lastHovered]);
+      lastHovered = null;
+    }
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+
+animate();
 
  
  
@@ -459,10 +513,9 @@ const render = () => {
     chair.rotation.y += Math.sin(clock.getElapsedTime()) * 0.0004;
 
   });
-  PianoKeys.forEach((key) => {
-  });
+   
 
-  //Raycasting
+   //Raycasting
   raycaster.setFromCamera(pointer, camera);
   currentIntersect = raycaster.intersectObjects(raycasterobjects);
   for (let i = 0; i < currentIntersect.length; i++) {}
