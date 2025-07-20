@@ -81,8 +81,7 @@ const PianoKeys = [];
 const HoverObjects = [];
 const socialLinks = {
   Github: "https://github.com/sum1t7",
-  Youtube: "https://www.youtube.com",
-};
+ };
 const models = {
   project: document.querySelector(".modal.project"),
   about: document.querySelector(".modal.about"),
@@ -380,9 +379,9 @@ const showModal = (modal) => {
   modal.style.display = "block";
   const tl = gsap.timeline();
   tl.set(modal, { opacity: 1, scale: 0 })
-    .to(modal, { opacity: 1, scale: 1.25, duration: 0.2, ease: "power2.inOut" })
-    .to(modal, { scale: 0.95, duration: 0.2, ease: "power2.inOut" })
-    .to(modal, { opacity: 1, scale: 1, duration: 0.2, ease: "power2.inOut" });
+    .to(modal, { opacity: 1, scale: 1.25, duration: 0.3, ease: "power2.inOut" })
+    .to(modal, { scale: 0.95, duration: 0.3, ease: "power2.inOut" })
+    .to(modal, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.inOut" });
 };
 const hideModal = (modal) => {
   const tl = gsap.timeline();
@@ -392,7 +391,9 @@ const hideModal = (modal) => {
 };
 function animateCameraTo(objectPosition) {
   const newCamPos = objectPosition.clone().add(new THREE.Vector3(2, 0, 2));
-
+  const audio = new Audio("/public/PianoKeys/FishMusic.mp3");
+  audio.currentTime = 0;
+  audio.play();
   gsap.to(camera.position, {
     x: newCamPos.x,
     y: newCamPos.y,
@@ -427,7 +428,8 @@ function animateCameraTo(objectPosition) {
       ease: "power2.inOut",
       onUpdate: () => controls.update(),
     });
-  }, 2000);
+  }, 4000);
+
 }
 function hoverEffect(obj) {
   gsap.to(obj.scale, {
