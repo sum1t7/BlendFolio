@@ -7,8 +7,14 @@
     <title>Vite App</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+    </div>
 
+    <div class="loading-screen">
+      <p class="Paragraph-Loading">There is no point to this.</p>
+      <button class="loading-button">Loading... </button>
+    </div>
+     
     <div class="about modal">
       <div class="Outside">
         <div>
@@ -17,10 +23,8 @@
         <div class="Inside inside-about">
             <div class="img-div">
               <img
-              class="model-img"
+              class="model-img-about"
               src="/textures/video/Photo.webp"
-              width="400"
-              height="400"
               alt="About Image"
               />
             </div>
@@ -66,7 +70,7 @@
       <div class="Outside">
         <h1 class="White-heading">Project</h1>
 
-        <div class="Inside">
+        <div class="Inside inside-project">
           <div class="together">
             <div class="sec">
               <a
@@ -157,7 +161,7 @@
         <h1 class="White-heading">Contact</h1>
         <div class="Inside">
           <h1 class="Paragraph">Let's Connect</h1>
-          <div class="together gap-big">
+          <div class="together-contact ">
             <a
               href="https://github.com/sum1t7"
               target="_blank"
@@ -216,6 +220,7 @@
     <div id="experience">
       <canvas id="experience-canvas" class="experience-canvas"></canvas>
     </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

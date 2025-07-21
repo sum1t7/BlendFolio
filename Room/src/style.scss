@@ -29,7 +29,11 @@
 }
 
  
-
+body{
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 
 //all of them
 a {
@@ -52,6 +56,7 @@ a {
   justify-content: center;
   z-index: 0;
   padding: 20px;
+
 }
 .modal {
   background-color: #EBD6FB;
@@ -66,7 +71,7 @@ a {
   padding: 20px;
   border-radius: 25px;
   border: 8px solid #687FE5;
-  display: none;
+  display: none; 
 }
 .White-heading{
   font-size: 3rem;
@@ -108,14 +113,17 @@ a {
   border-radius: 20px;
   background-color: #EBD6FB;
 }
-.Inside-heding{
+.Inside-heading{
   font-family: 'Pacifico', cursive;
+  font-weight: bold;
+  color: #687FE5;
 }
 .Inside{
  display: flex; 
  flex-direction: column;
 justify-content: center;
  z-index: 0;
+ padding: 15px;
  height: 100%;  
  overflow-x: hidden;
  &::-webkit-scrollbar {
@@ -130,6 +138,7 @@ justify-content: center;
   font-weight: 500;
    line-height: 1.6;
   margin-bottom: 15px;
+  margin-left: 10px;
 color: #000000;
 }
 .Outside{
@@ -154,7 +163,14 @@ color: #000000;
   height: 90%;
 }
 .inside-about{
-  padding-top: 300px;
+  padding-top: 330px;
+}
+.model-img-about{
+  width: 400px;
+  height: 400px;
+  border: 8px solid #687FE5;
+  border-radius: 20px;
+  align-self: center;
 }
 
   
@@ -170,13 +186,217 @@ color: #000000;
 
 
 // Contacts 
-.gap-big{
-  gap:70px;
-}
+
 .contact {
   max-width: 500px;
   height: 50%;
 }
 
+.together-contact {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  padding: 20px;
+  gap: 70px;
+}
 
- 
+
+//loading screen
+.loading-screen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 108vw;
+  height: 108vh;
+  margin-left: -54vw;
+  margin-top: -54vh;
+  overflow: hidden;
+  z-index: 999999;
+  transform: perspective(1000px);
+  background-color: #EBD6FB;
+  border: 8px solid #687FE5;
+  border-radius: 20px;
+}
+
+.loading-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  padding: 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: #EBD6FB;
+  color: #687FE5;
+  font-family: 'Pacifico', cursive;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0px 2px 3px 0px #6c64698e;
+}
+.Paragraph-Loading {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  color: #687FE5;
+  font-family: 'Pacifico', cursive;
+  text-align: center;
+  width: 80%;
+}
+
+.inside-project {
+  padding-top: 0px;
+}
+@media (max-width: 480px) {
+  .inside-about {
+    padding-top: 200px;
+  }
+
+  .model-img-about {
+    width: 300px;
+    height: 300px;
+  }
+
+  .Paragraph {
+    font-size: 1rem;
+  }
+
+  .Inside-heading {
+    font-size: 1.5rem;
+  }
+
+  .White-heading {
+    font-size: 2rem;
+    padding: 5px 10px;
+  }
+
+  .together {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .inside-project {
+    padding-top: 600px;
+  }
+
+  .contact {
+    max-width: 90%;
+    height: 40%;
+  }
+}
+
+/* Small tablets and landscape phones */
+@media (min-width: 481px) and (max-width: 767px) {
+  .inside-about {
+    padding-top: 250px;
+  }
+
+  .model-img-about {
+    width: 350px;
+    height: 350px;
+  }
+
+  .Paragraph {
+    font-size: 1.1rem;
+  }
+
+  .Inside-heading {
+    font-size: 1.7rem;
+  }
+
+  .White-heading {
+    font-size: 2.2rem;
+  }
+
+  .together {
+    flex-direction: column;
+  }
+
+  .inside-project {
+    padding-top: 500px;
+  }
+
+  .contact {
+    max-width: 85%;
+    height: 45%;
+  }
+}
+
+/* Tablets & small desktops */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .inside-about {
+    padding-top: 300px;
+  }
+
+  .model-img-about {
+    width: 400px;
+    height: 400px;
+  }
+
+  .Paragraph {
+    font-size: 1.2rem;
+  }
+
+  .Inside-heading {
+    font-size: 2rem;
+  }
+
+  .White-heading {
+    font-size: 2.5rem;
+  }
+
+  .together {
+    flex-direction: column;
+  }
+
+  .inside-project {
+    padding-top: 300px;
+  }
+
+  .contact {
+    max-width: 60%;
+    height: 50%;
+  }
+}
+
+/* Large desktops */
+@media (min-width: 1200px) {
+  .inside-about {
+    padding-top: 450px;
+  }
+
+  .model-img-about {
+    width: 500px;
+    height: 500px;
+  }
+
+  .Paragraph {
+    font-size: 1.3rem;
+  }
+
+  .Inside-heading {
+    font-size: 2.2rem;
+  }
+
+  .White-heading {
+    font-size: 3rem;
+  }
+
+  .together {
+    flex-direction: row;
+  }
+
+  .inside-project {
+    padding-top: 0px;
+  }
+
+  .contact {
+    max-width: 500px;
+    height: 50%;
+  }
+}
