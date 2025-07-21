@@ -78,10 +78,10 @@ const about = [];
 const contact = [];
 const project = [];
 const PianoKeys = [];
-const HoverObjects = [];
+let currentHoverObject = null;
 const socialLinks = {
   Github: "https://github.com/sum1t7",
- };
+};
 const models = {
   project: document.querySelector(".modal.project"),
   about: document.querySelector(".modal.about"),
@@ -110,6 +110,8 @@ imageTexture.needsUpdate = true;
 imageTexture.offset.set(0.1, 0);
 imageTexture.repeat.set(1.2, 1.2);
 imageTexture.colorSpace = THREE.SRGBColorSpace;
+
+
 
 //EventListeners
 document.querySelectorAll(".modal-exit").forEach((Button) => {
@@ -179,6 +181,7 @@ window.addEventListener("click", (event) => {
   }
 });
 window.addEventListener("touchend", (e) => {
+  e.preventDefault();
   if (currentIntersect.length > 0) {
     const obj = currentIntersect[0].object;
     if (obj.name.includes("PianoKey")) {
@@ -197,7 +200,7 @@ window.addEventListener("touchend", (e) => {
           },
         });
       }
-      const audio = new Audio(`/public/PianoKeys/${keyIndex}.mp3`);
+      const audio = new Audio(`PianoKeys/${keyIndex}.mp3`);
       console.log(keyIndex);
       audio.play();
     }
@@ -222,7 +225,7 @@ window.addEventListener("click", (e) => {
           },
         });
       }
-      const audio = new Audio(`/public/PianoKeys/${keyIndex}.mp3`);
+      const audio = new Audio(`/PianoKeys/${keyIndex}.mp3`);
       console.log(keyIndex);
       audio.play();
     }
@@ -236,7 +239,8 @@ window.addEventListener("click", () => {
     }
   }
 });
-window.addEventListener("touchend", () => {
+window.addEventListener("touchend", (e) => {
+  e.preventDefault();
   if (currentIntersect.length > 0) {
     const obj = currentIntersect[0].object;
     if (obj.name.includes("Fish") || obj.name.includes("Blob")) {
@@ -267,6 +271,10 @@ window.addEventListener("resize", () => {
 loader.load("/model/CuteProject12.glb", (glb) => {
   glb.scene.traverse((child) => {
     if (child.isMesh) {
+       if (child.name.includes("Hover")) {
+            child.userData.initialScale = new THREE.Vector3().copy(child.scale);
+            child.userData.isAnimating = false;
+          }
       if (child.name.includes("Glass")) {
         child.material = GlassMaterial;
       } else if (child.name.includes("Water")) {
@@ -330,9 +338,7 @@ loader.load("/model/CuteProject12.glb", (glb) => {
           if (child.name.includes("Project")) {
             project.push(child);
           }
-          if (child.name.includes("Hover")) {
-            HoverObjects.push(child);
-          }
+          
         });
       }
     }
@@ -364,9 +370,9 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(3.4741997116209347, 15.927475396592332, 3.714915482053487);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.minPolarAngle = THREE.MathUtils.degToRad(20);
+controls.minPolarAngle = THREE.MathUtils.degToRad(0);
 controls.maxPolarAngle = THREE.MathUtils.degToRad(80);
-controls.minAzimuthAngle = THREE.MathUtils.degToRad(-75);
+controls.minAzimuthAngle = THREE.MathUtils.degToRad(-70);
 controls.maxAzimuthAngle = THREE.MathUtils.degToRad(-10);
 controls.minDistance = 5;
 controls.maxDistance = 80;
@@ -389,9 +395,10 @@ const hideModal = (modal) => {
     .to(modal, { opacity: 1, scale: 1.25, duration: 0.2, ease: "power2.inOut" })
     .to(modal, { opacity: 0, scale: 0, duration: 0.2, ease: "power2.inOut" });
 };
+
 function animateCameraTo(objectPosition) {
   const newCamPos = objectPosition.clone().add(new THREE.Vector3(2, 0, 2));
-  const audio = new Audio("/public/PianoKeys/FishMusic.mp3");
+  const audio = new Audio("/PianoKeys/FishMusic.mp3");
   audio.currentTime = 0;
   audio.play();
   gsap.to(camera.position, {
@@ -429,26 +436,8 @@ function animateCameraTo(objectPosition) {
       onUpdate: () => controls.update(),
     });
   }, 4000);
+}
 
-}
-function hoverEffect(obj) {
-  gsap.to(obj.scale, {
-    x: 1.2,
-    y: 1.2,
-    z: 1.2,
-    duration: 0.4,
-    ease: "power2.out",
-  });
-}
-function resetObject(obj) {
-  gsap.to(obj.scale, {
-    x: 1,
-    y: 1,
-    z: 1,
-    duration: 0.3,
-    ease: "power2.inOut",
-  });
-}
 function handleRaycasterInteraction() {
   if (currentIntersect.length > 0) {
     const currentIntersectObject = currentIntersect[0].object;
@@ -472,39 +461,36 @@ function handleRaycasterInteraction() {
     }
   }
 }
-function introAnimation() {
-  const t1 = gsap.timeline({ defaults: { duration: 1, ease: "power2.inOut" } });
-}
 
-function animate() {
-  raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(HoverObjects, true); // raycast only against hoverable objects
+function playHoverAnimation(object, isHovering) {
+  if (object.userData.isAnimating) return;
+  gsap.killTweensOf(object.scale);
 
-  if (intersects.length > 0) {
-    const obj = intersects[0].object;
-    const keyIndex = HoverObjects.indexOf(obj);
-
-    if (keyIndex !== -1) {
-      if (lastHovered !== keyIndex) {
-        if (lastHovered !== null && HoverObjects[lastHovered]) {
-          resetObject(HoverObjects[lastHovered]);
-        }
-        hoverEffect(obj);
-        lastHovered = keyIndex;
-      }
-    }
+  if (isHovering) {
+    gsap.to(object.scale, {
+      x: object.userData.initialScale.x * 1.2,
+      y: object.userData.initialScale.y * 1.2,
+      z: object.userData.initialScale.z * 1.2,
+      duration: 0.3,
+      ease: "back.in(1.8)",
+    });
+ 
   } else {
-    if (lastHovered !== null && HoverObjects[lastHovered]) {
-      resetObject(HoverObjects[lastHovered]);
-      lastHovered = null;
-    }
+    gsap.to(object.scale, {
+      x: object.userData.initialScale.x,
+      y: object.userData.initialScale.y,
+      z: object.userData.initialScale.z,
+      duration: 0.3,
+      ease: "back.in(1.8)",
+    });
   }
-
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
 }
 
-animate();
+function playInroAnimation(){
+
+}
+
+
 
 const render = () => {
   zAxisFans.forEach((fan) => {
@@ -524,12 +510,28 @@ const render = () => {
   for (let i = 0; i < currentIntersect.length; i++) {}
   if (currentIntersect.length > 0) {
     const currentIntersectObject = currentIntersect[0].object;
+
+    if (currentIntersectObject.name.includes("Hover") ) {
+      if (currentHoverObject !== currentIntersectObject ) {
+        if (currentHoverObject) {
+          playHoverAnimation(currentHoverObject, false);
+        }
+        playHoverAnimation(currentIntersectObject, true);
+        currentHoverObject = currentIntersectObject;
+      }
+    }
+ 
+
     if (currentIntersectObject.name.includes("Pointer")) {
       document.body.style.cursor = "pointer";
     } else {
       document.body.style.cursor = "default";
     }
   } else {
+    if (currentHoverObject) {
+      playHoverAnimation(currentHoverObject, false);
+      currentHoverObject = null;
+    }
     document.body.style.cursor = "default";
   }
 
