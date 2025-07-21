@@ -21,6 +21,7 @@ const size = {
 const manager = new THREE.LoadingManager();
 const loadingScreen = document.querySelector(".loading-screen");
 const loadingScreenButton = document.querySelector(".loading-button");
+const loadingText1 = document.querySelector(".Paragraph-Loading.text1");
 const textureLoader = new THREE.TextureLoader(manager);
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("/draco/");
@@ -237,10 +238,9 @@ window.addEventListener("click", (e) => {
       audio.play();
       setTimeout(() => {
         audio.addEventListener("ended", () => {
-        backgroundMusic.play();
-      });
+          backgroundMusic.play();
+        });
       }, 1000);
-       
     }
   }
 });
@@ -281,7 +281,7 @@ window.addEventListener("resize", () => {
 });
 
 // MODEL SCENE CAMERA
-loader.load("/model/CuteProject13-v1.glb", (glb) => {
+loader.load("/model/CuteProject.glb", (glb) => {
   glb.scene.traverse((child) => {
     if (child.isMesh) {
       if (child.name.includes("Hover")) {
@@ -393,9 +393,9 @@ controls.target.set(3.4741997116209347, 15.927475396592332, 3.714915482053487);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.minPolarAngle = THREE.MathUtils.degToRad(0);
-controls.maxPolarAngle = THREE.MathUtils.degToRad(80);
-controls.minAzimuthAngle = THREE.MathUtils.degToRad(-70);
-controls.maxAzimuthAngle = THREE.MathUtils.degToRad(-10);
+controls.maxPolarAngle = THREE.MathUtils.degToRad(100);
+controls.minAzimuthAngle = THREE.MathUtils.degToRad(-100);
+controls.maxAzimuthAngle = THREE.MathUtils.degToRad(0);
 controls.minDistance = 5;
 controls.maxDistance = 90;
 controls.enablePan = false;
@@ -430,7 +430,7 @@ function animateCameraTo(objectPosition) {
   audio.currentTime = 0;
   backgroundMusic.pause();
   audio.play();
-  
+
   gsap.to(camera.position, {
     x: newCamPos.x,
     y: newCamPos.y,
@@ -526,7 +526,14 @@ function playintroanimation(object) {
   });
 }
 
+manager.onProgress = function () {
+  setTimeout(() => {
+    loadingText1.textContent = "Probably should have kept this simpler";
+  }, 2000);
+};
+
 manager.onLoad = function () {
+  loadingText1.textContent = "Welcome to my portfolio";
   loadingScreenButton.style.border = "8px solid #2a0f4e";
   loadingScreenButton.style.background = "#401d49";
   loadingScreenButton.style.color = "#e6dede";
@@ -539,7 +546,6 @@ manager.onLoad = function () {
 
   function handleEnter() {
     if (isDisabled) return;
-
     loadingScreenButton.style.cursor = "default";
     loadingScreenButton.style.border = "8px solid #6e5e9c";
     loadingScreenButton.style.background = "#ead7ef";
