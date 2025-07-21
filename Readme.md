@@ -6,12 +6,9 @@ Made with blender and threejs and credits - Andrew Woan's yt channel.
 # Preview:
 
 <div style="text-align: left;">
-  <img src="/public/images/Preview1.webp" alt="Home Page" style="max-width: 80%;" >
-  <img src="/public/images/Preview2.webp" alt="Home Page" style="max-width: 80%;" >
+  <img src="./Room/public/images/Preview1.webp" alt="Home Page" style="max-width: 80%;" >
+  <img src="./Room/public/images/Preview2.webp" alt="Home Page" style="max-width: 80%;" >
 </div>
-
-# Content 
-Contains a 
 
 ### Reporting Issues
 
