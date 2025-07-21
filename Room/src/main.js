@@ -145,8 +145,6 @@ document.querySelectorAll(".modal-exit").forEach((Button) => {
 window.addEventListener(
   "touchstart",
   (e) => {
-    // if (isModalOpen) return;
-    e.preventDefault();
     pointer.x = (e.touches[0].clientX / size.width) * 2 - 1;
     pointer.y = -(e.touches[0].clientY / size.height) * 2 + 1;
   },
@@ -155,8 +153,6 @@ window.addEventListener(
 window.addEventListener(
   "touchend",
   (e) => {
-    // if (isModalOpen) return;
-    e.preventDefault();
     handleRaycasterInteraction();
   },
   { passive: false }
@@ -186,7 +182,6 @@ window.addEventListener("click", (event) => {
   }
 });
 window.addEventListener("touchend", (e) => {
-  e.preventDefault();
   if (currentIntersect.length > 0) {
     const obj = currentIntersect[0].object;
     if (obj.name.includes("PianoKey")) {
@@ -253,7 +248,6 @@ window.addEventListener("click", () => {
   }
 });
 window.addEventListener("touchend", (e) => {
-  e.preventDefault();
   if (currentIntersect.length > 0) {
     const obj = currentIntersect[0].object;
     if (obj.name.includes("Fish") || obj.name.includes("Blob")) {
@@ -393,11 +387,11 @@ controls.target.set(3.4741997116209347, 15.927475396592332, 3.714915482053487);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.minPolarAngle = THREE.MathUtils.degToRad(0);
-controls.maxPolarAngle = THREE.MathUtils.degToRad(100);
+controls.maxPolarAngle = THREE.MathUtils.degToRad(95);
 controls.minAzimuthAngle = THREE.MathUtils.degToRad(-100);
 controls.maxAzimuthAngle = THREE.MathUtils.degToRad(0);
 controls.minDistance = 5;
-controls.maxDistance = 90;
+controls.maxDistance = 70;
 controls.enablePan = false;
 
 let originalCamPos = camera.position.clone();
